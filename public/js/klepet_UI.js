@@ -55,6 +55,16 @@ function filtirirajVulgarneBesede(vhod) {
 $(document).ready(function() {
   var klepetApp = new Klepet(socket);
 
+  socket.on("dregljaj", function(naredi){
+    if(naredi.dregljaj){
+      //zatresi
+      console.log("tresem");
+      var tresenje = $("#vsebina").jrumble()
+      tresenje.trigger('startRumble');
+      setTimeout(function(){tresenje.trigger('stopRumble')}, 1500);
+    }
+  });
+  
   socket.on('vzdevekSpremembaOdgovor', function(rezultat) {
     var sporocilo;
     if (rezultat.uspesno) {
@@ -93,7 +103,7 @@ $(document).ready(function() {
       $('#poslji-sporocilo').focus();
     });
   });
-
+  
   socket.on('uporabniki', function(uporabniki) {
     $('#seznam-uporabnikov').empty();
     for (var i=0; i < uporabniki.length; i++) {
