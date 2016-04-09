@@ -3,6 +3,8 @@ function divElementEnostavniTekst(sporocilo) {
   var jeSlika = aliVsebujeSliko(sporocilo);
   var jeVideo = jePovezavaNaVideo(sporocilo);
   if (jeSmesko | jeSlika | jeVideo) {
+    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;img/g, '<img').replace(/&lt;iframe/g, '<iframe').replace("&lt;/iframe","</iframe").replace('20px"&gt;', '20px" />').replace("/iframe&gt;","</iframe>").replace("allowfullscreen&gt;","allowfullscreen>").replace('png\' /&gt;', 'png\' />');
+    console.log(sporocilo);
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   }
   return $('<div style="font-weight: bold;"></div>').text(sporocilo);
@@ -24,8 +26,6 @@ function procesirajVnosUporabnika(klepetApp, socket) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
     }
   } else {
-    sporocilo = preprecevanjeNapadov(sporocilo);
-    sporocilo = filtirirajVulgarneBesede(sporocilo);
     sporocilo = povezavaNaSliko(sporocilo);
     sporocilo = povezavaNaVideo(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
@@ -191,7 +191,7 @@ function povezavaNaVideo(vhod){
       var indeks_zacetka= (besedeNaVhodu[i]).lastIndexOf("://www.youtube.com/watch?v=");
       var dolzina=(besedeNaVhodu[i]).length;
       var video_id= (besedeNaVhodu[i]).substring(indeks_zacetka+27,dolzina);
-      besedeIzhod+= '<iframe class="video_link" src="https://www.youtube.com/embed/'+video_id+'" allowfullscreen></iframe>';
+      besedeIzhod+= ' <iframe class="video_link" src="https://www.youtube.com/embed/'+video_id+'" allowfullscreen></iframe>';
     }
   }
   return besedeIzhod;
@@ -207,9 +207,4 @@ function jePovezavaNaVideo(vhod){
     }
   }
   return false;
-}
-
-function preprecevanjeNapadov(sporocilo){
-  sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;img/g, '<img').replace(/&lt;iframre/g, '<ifrme').replace('png\' /&gt;', 'png\' />').replace('jpg\' /&gt;', 'png\' />').replace('gif\' /&gt;', 'png\' />').replace("</iframe/&gt;","</iframe>");
-  return sporocilo;
 }
