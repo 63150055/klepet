@@ -24,6 +24,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
     }
   } else {
+    sporocilo = preprecevanjeNapadov(sporocilo);
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     sporocilo = povezavaNaSliko(sporocilo);
     sporocilo = povezavaNaVideo(sporocilo);
@@ -206,4 +207,9 @@ function jePovezavaNaVideo(vhod){
     }
   }
   return false;
+}
+
+function preprecevanjeNapadov(sporocilo){
+  sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;img/g, '<img').replace(/&lt;iframre/g, '<ifrme').replace('png\' /&gt;', 'png\' />').replace('jpg\' /&gt;', 'png\' />').replace('gif\' /&gt;', 'png\' />').replace("</iframe/&gt;","</iframe>");
+  return sporocilo;
 }
