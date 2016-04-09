@@ -1,7 +1,8 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
-    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+  var jeVideo = jePovezavaNaVideo(sporocilo);
+  if (jeSmesko | jeVideo) {
+    //sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
@@ -24,6 +25,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     }
   } else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
+    sporocilo = povezavaNaVideo(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
@@ -131,3 +133,32 @@ function dodajSmeske(vhodnoBesedilo) {
   }
   return vhodnoBesedilo;
 }
+
+function povezavaNaVideo(vhod){
+  var video_link = /https?:\/\/www\.youtube\.com\/watch\?v\=(\S+)/g;
+  var besedeNaVhodu=[];
+  besedeNaVhodu=vhod.split(" ");
+  besedeIzhod=vhod;
+  for (var i in besedeNaVhodu) {
+    if(besedeNaVhodu[i].search(video_link) == 0 ){
+      var indeks_zacetka= (besedeNaVhodu[i]).lastIndexOf("://www.youtube.com/watch?v=");
+      var dolzina=(besedeNaVhodu[i]).length;
+      var video_id= (besedeNaVhodu[i]).substring(indeks_zacetka+27,dolzina);
+      besedeIzhod+= '<iframe class="video_link" src="https://www.youtube.com/embed/'+video_id+'" allowfullscreen></iframe>';
+    }
+  }
+  return besedeIzhod;
+}
+function jePovezavaNaVideo(vhod){
+  var video_link = /https?:\/\/www\.youtube\.com\/watch\?v\=(\S+)/g;
+  var besedeNaVhodu=[];
+  besedeNaVhodu=vhod.split(" ");
+  besedeIzhod=vhod;
+  for (var i in besedeNaVhodu) {
+    if(besedeNaVhodu[i].search(video_link) == 0 ){
+      return true;
+    }
+  }
+  return false;
+}
+
