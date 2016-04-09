@@ -1,11 +1,17 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
+  var jeSlika = aliVsebujeSliko(sporocilo);
+  if (jeSmesko && jeSlika) {
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  else if(jeSmesko){
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
-  } else {
-    return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
+  else if(jeSlika){
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  return $('<div style="font-weight: bold;"></div>').text(sporocilo);
 }
 
 function divElementHtmlTekst(sporocilo) {
@@ -14,6 +20,7 @@ function divElementHtmlTekst(sporocilo) {
 
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
+  vsebujeSliko=false;
   sporocilo = dodajSmeske(sporocilo);
   var sistemskoSporocilo;
 
@@ -24,6 +31,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     }
   } else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
+    sporocilo = povezavaNaSliko(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
@@ -50,6 +58,36 @@ function filtirirajVulgarneBesede(vhod) {
     });
   }
   return vhod;
+}
+
+var vsebujeSliko=false;
+function povezavaNaSliko(vhod) {
+  var besedeNaVhodu = [];
+  besedeNaVhodu=vhod.split(" ");
+  besedeIzhod=vhod;
+  for (var i in besedeNaVhodu) {
+    if(besedeNaVhodu[i].search("http://") == 0 | besedeNaVhodu[i].search("https://") == 0){
+      if (besedeNaVhodu[i].indexOf(".jpg") == besedeNaVhodu[i].length-4 | besedeNaVhodu[i].indexOf(".png") == besedeNaVhodu[i].length-4 | besedeNaVhodu[i].indexOf(".gif") == besedeNaVhodu[i].length-4) {
+        besedeIzhod= besedeIzhod + '  <img src="'+besedeNaVhodu[i]+'"width="200px" style="PADDING-LEFT: 20px">';
+        vsebujeSliko=true;
+      }
+    }
+  }
+  return besedeIzhod;
+}
+
+function aliVsebujeSliko(vhod){
+  var besedeNaVhodu = [];
+  besedeNaVhodu=vhod.split(" ");
+  besedeIzhod=vhod;
+  for (var i in besedeNaVhodu) {
+    if(besedeNaVhodu[i].search("http://") == 0 | besedeNaVhodu[i].search("https://") == 0){
+      if (besedeNaVhodu[i].indexOf(".jpg") == besedeNaVhodu[i].length-4 | besedeNaVhodu[i].indexOf(".png") == besedeNaVhodu[i].length-4 | besedeNaVhodu[i].indexOf(".gif") == besedeNaVhodu[i].length-4) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 $(document).ready(function() {
