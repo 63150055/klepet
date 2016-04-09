@@ -58,7 +58,6 @@ $(document).ready(function() {
   socket.on("dregljaj", function(naredi){
     if(naredi.dregljaj){
       //zatresi
-      console.log("tresem");
       var tresenje = $("#vsebina").jrumble()
       tresenje.trigger('startRumble');
       setTimeout(function(){tresenje.trigger('stopRumble')}, 1500);
@@ -140,4 +139,5 @@ function dodajSmeske(vhodnoBesedilo) {
       preslikovalnaTabela[smesko] + "' />");
   }
   return vhodnoBesedilo;
+  
 }
