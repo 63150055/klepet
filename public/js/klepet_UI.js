@@ -121,6 +121,11 @@ $(document).ready(function() {
     $('#sporocila').append(novElement);
   });
   
+  socket.on('sporociloDregljaj', function (sporocilo) {
+    var novElement = divElementHtmlTekst(sporocilo.besedilo);
+    $('#sporocila').append(novElement);
+  });
+  
   socket.on('kanali', function(kanali) {
     $('#seznam-kanalov').empty();
 
