@@ -91,7 +91,6 @@ $(document).ready(function() {
 
   socket.on("dregljaj", function(naredi){
     if(naredi.dregljaj){
-      //zatresi
       var tresenje = $("#vsebina").jrumble()
       tresenje.trigger('startRumble');
       setTimeout(function(){tresenje.trigger('stopRumble')}, 1500);
